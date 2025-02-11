@@ -45,6 +45,7 @@ trap cleanup_ctx_dir EXIT
 
 function image_ref {
   local image="$1"
+
   local add_repo="${2:-1}"
   if [ $add_repo = 1 ] && [ -n "$REPO" ]; then
     image="$REPO/$image"
@@ -52,11 +53,12 @@ function image_ref {
   if [ -n "$TAG" ]; then
     image="$image:$TAG"
   fi
-  echo "$image"
+  echo "$REPO:$TAG"
 }
 
 function docker_push {
   local image_name="$1"
+  echo "trying to push image image_name = ${image_name} image_ref = $(image_ref ${image_name})"
   if [ ! -z $(docker images -q "$(image_ref ${image_name})") ]; then
     docker push "$(image_ref ${image_name})"
     if [ $? -ne 0 ]; then
@@ -173,7 +175,7 @@ function build {
   local PYDOCKERFILE=${PYDOCKERFILE:-false}
   local RDOCKERFILE=${RDOCKERFILE:-false}
   local ARCHS=${ARCHS:-"--platform linux/amd64,linux/arm64"}
-
+  echo "-t $(image_ref spark)"
   (cd $(img_ctx_dir base) && docker build $NOCACHEARG "${BUILD_ARGS[@]}" \
     -t $(image_ref spark) \
     -f "$BASEDOCKERFILE" .)

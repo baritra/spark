@@ -52,7 +52,7 @@ object SparkHiveExample {
     import spark.sql
 
     sql("CREATE TABLE IF NOT EXISTS src (key INT, value STRING) USING hive")
-    sql("LOAD DATA LOCAL INPATH 'examples/src/main/resources/kv1.txt' INTO TABLE src")
+    sql("LOAD DATA LOCAL INPATH '/opt/spark/examples/src/main/resources/kv1.txt' INTO TABLE src")
 
     // Queries are expressed in HiveQL
     sql("SELECT * FROM src").show()
